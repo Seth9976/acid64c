@@ -22,11 +22,20 @@ jobs:
       - name: Build release  
         run: cargo build --release --target i686-pc-windows-msvc  
   
-      - name: Copy DLL to output folder  
-        run: copy /Y library\acid64pro.dll target\i686-pc-windows-msvc\release\acid64pro.dll  
+      - name: Sniff output directory  
+        run: Get-ChildItem -Path target -Recurse -Filter *.dll | Select-Object FullName  
   
-      - name: Copy HardSID DLL to output folder  
-        run: copy /Y library\hardsid_usb.dll target\i686-pc-windows-msvc\release\hardsid_usb.dll  
+      - name: Sniff release directory contents  
+        run: Get-ChildItem -Path target\i686-pc-windows-msvc\release  
+  
+      - name: Sniff exe location  
+        run: Get-ChildItem -Path target -Recurse -Filter acid64c.exe | Select-Object FullName  
+  
+      - name: Copy acid64pro.dll  
+        run: Copy-Item -Path library\acid64pro.dll -Destination target\i686-pc-windows-msvc\release\acid64pro.dll -Force  
+  
+      - name: Copy hardsid_usb.dll  
+        run: Copy-Item -Path library\hardsid_usb.dll -Destination target\i686-pc-windows-msvc\release\hardsid_usb.dll -Force  
   
       - name: Upload artifact  
         uses: actions/upload-artifact@v4  
